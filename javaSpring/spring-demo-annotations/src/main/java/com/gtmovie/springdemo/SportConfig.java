@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 //@ComponentScan("com.gtmovie.springdemo")
-@PropertySource("/home/pp-2/TULESH/javaSpring/spring-demo-annotations/sport.properties")
+@PropertySource("classpath:sport.properties")
 public class SportConfig {
     @Bean
     public FortuneService sadFortuneService(){
