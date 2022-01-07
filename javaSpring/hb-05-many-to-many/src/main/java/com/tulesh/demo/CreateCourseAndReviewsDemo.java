@@ -1,16 +1,20 @@
 package com.tulesh.demo;
 
+import com.tulesh.hibernate.demo.entity.Course;
 import com.tulesh.hibernate.demo.entity.Instructor;
 import com.tulesh.hibernate.demo.entity.InstructorDetail;
+import com.tulesh.hibernate.demo.entity.Review;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class DeleteInstructorDetailDemo {
+public class CreateCourseAndReviewsDemo {
     public static void main(String[] args) {
         SessionFactory factory = new Configuration().configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Instructor.class)
                 .addAnnotatedClass(InstructorDetail.class)
+                .addAnnotatedClass(Course.class)
+                .addAnnotatedClass(Review.class)
                 .buildSessionFactory();
 
         Session session = factory.getCurrentSession();
@@ -18,21 +22,23 @@ public class DeleteInstructorDetailDemo {
 
             session.beginTransaction();
 
-            int theId=3;
-            InstructorDetail tempInstructorDetail=session.get(InstructorDetail.class,theId);
+            Course tempCourse=new Course("Course 2");
 
-            System.out.println("tempInstructorDetail : "+   tempInstructorDetail);
+            tempCourse.addReview(new Review("wow great"));
+            tempCourse.addReview(new Review("wow great1"));
+            tempCourse.addReview(new Review("wow great22"));
+            tempCourse.addReview(new Review("wow great333"));
 
-            System.out.println("the associated instructor : "+tempInstructorDetail.getInstructor());
+            System.out.println("Saving code");
+            System.out.println(tempCourse);
+            System.out.println(tempCourse.getReviews());
 
-            System.out.println("deleting tempInstructorDetail : "+tempInstructorDetail);
+            session.save(tempCourse);
 
-            tempInstructorDetail.getInstructor().setInstructorDetail(null);
-            session.delete(tempInstructorDetail);
             session.getTransaction().commit();
             System.out.println("Done ! ");
         } catch (Exception e) {
-            e.printStackTrace();
+
         } finally {
             session.close();
             factory.close();
