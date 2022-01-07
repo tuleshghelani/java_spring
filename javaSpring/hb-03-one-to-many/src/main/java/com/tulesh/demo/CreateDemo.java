@@ -2,11 +2,12 @@ package com.tulesh.demo;
 
 import com.tulesh.hibernate.demo.entity.Instructor;
 import com.tulesh.hibernate.demo.entity.InstructorDetail;
+import com.tulesh.hibernate.demo.entity.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class DeleteInstructorDetailDemo {
+public class CreateDemo {
     public static void main(String[] args) {
         SessionFactory factory = new Configuration().configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Instructor.class)
@@ -15,26 +16,26 @@ public class DeleteInstructorDetailDemo {
 
         Session session = factory.getCurrentSession();
         try {
+            Instructor tempInstructor=new Instructor("Tulesh8","ghelani8","gt1238@gmail.com");
+
+            InstructorDetail tempInstructorDetail=new InstructorDetail("www.gtmovie.com/8","gtmovie8 - all movie available here");
+
+//            Instructor tempInstructor=new Instructor("Tulesh12","ghelani12","gt12312@gmail.com");
+//
+//            InstructorDetail tempInstructorDetail=new InstructorDetail("www.gtmovie.com/12","gtmovie12 - all movie available here");
+            tempInstructor.setInstructorDetail(tempInstructorDetail);
 
             session.beginTransaction();
 
-            int theId=3;
-            InstructorDetail tempInstructorDetail=session.get(InstructorDetail.class,theId);
+            System.out.println("saving instructor : "+tempInstructor);
+            session.save(tempInstructor);
 
-            System.out.println("tempInstructorDetail : "+   tempInstructorDetail);
 
-            System.out.println("the associated instructor : "+tempInstructorDetail.getInstructor());
-
-            System.out.println("deleting tempInstructorDetail : "+tempInstructorDetail);
-
-            tempInstructorDetail.getInstructor().setInstructorDetail(null);
-            session.delete(tempInstructorDetail);
             session.getTransaction().commit();
             System.out.println("Done ! ");
         } catch (Exception e) {
-            e.printStackTrace();
+
         } finally {
-            session.close();
             factory.close();
         }
     }

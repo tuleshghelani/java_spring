@@ -2,11 +2,12 @@ package com.tulesh.demo;
 
 import com.tulesh.hibernate.demo.entity.Instructor;
 import com.tulesh.hibernate.demo.entity.InstructorDetail;
+import com.tulesh.hibernate.demo.entity.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class DeleteInstructorDetailDemo {
+public class DeleteDemo {
     public static void main(String[] args) {
         SessionFactory factory = new Configuration().configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Instructor.class)
@@ -17,24 +18,22 @@ public class DeleteInstructorDetailDemo {
         try {
 
             session.beginTransaction();
+            int theId = 3;
+            Instructor tempInstructor = session.get(Instructor.class, theId);
 
-            int theId=3;
-            InstructorDetail tempInstructorDetail=session.get(InstructorDetail.class,theId);
+            System.out.println("Found instructor ");
 
-            System.out.println("tempInstructorDetail : "+   tempInstructorDetail);
-
-            System.out.println("the associated instructor : "+tempInstructorDetail.getInstructor());
-
-            System.out.println("deleting tempInstructorDetail : "+tempInstructorDetail);
-
-            tempInstructorDetail.getInstructor().setInstructorDetail(null);
-            session.delete(tempInstructorDetail);
+            if (tempInstructor != null) {
+                System.out.println("Deleting : " + tempInstructor);
+                session.delete(tempInstructor);
+            } else {
+                System.out.println("not deleting");
+            }
             session.getTransaction().commit();
             System.out.println("Done ! ");
         } catch (Exception e) {
-            e.printStackTrace();
+
         } finally {
-            session.close();
             factory.close();
         }
     }
