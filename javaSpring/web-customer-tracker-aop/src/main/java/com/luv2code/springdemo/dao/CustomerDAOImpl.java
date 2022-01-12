@@ -1,7 +1,6 @@
 package com.luv2code.springdemo.dao;
 
 import java.util.List;
-//import java.lang.*;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,22 +18,16 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Autowired
     private SessionFactory sessionFactory;
 
-//    @Override
-//    @Transactional
+    @Override
     public List<Customer> getCustomers() {
 
         // get the current hibernate session
         Session currentSession = sessionFactory.getCurrentSession();
 
-        String query1 = "FROM Customer";
-
-        String hql = "SELECT C.firstName FROM Customer C";
-        Query query = currentSession.createQuery(hql);
-        List results = query.list();
-
-        // create a query
-        Query<Customer> theQuery = currentSession.createQuery("FROM Customer order by lastName",
-                Customer.class);
+        // create a query  ... sort by last name
+        Query<Customer> theQuery =
+                currentSession.createQuery("from Customer order by lastName",
+                        Customer.class);
 
         // execute query and get result list
         List<Customer> customers = theQuery.getResultList();
@@ -44,60 +37,48 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public void addCustomer(Customer theCustomer) {
-        Session currentSession=sessionFactory.getCurrentSession();
+    public void saveCustomer(Customer theCustomer) {
 
+        // get current hibernate session
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        // save/upate the customer ... finally LOL
         currentSession.saveOrUpdate(theCustomer);
+
     }
 
     @Override
     public Customer getCustomer(int theId) {
-        Session currentSession= sessionFactory.getCurrentSession();
 
-        Customer theCustomer=currentSession.get(Customer.class,theId);
+        // get the current hibernate session
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        // now retrieve/read from database using the primary key
+        Customer theCustomer = currentSession.get(Customer.class, theId);
 
         return theCustomer;
     }
 
     @Override
     public void deleteCustomer(int theId) {
-        Session currentSession= sessionFactory.getCurrentSession();
-        Query theQuery=
-                currentSession.createQuery("delete from Customer where id=:customerId");
 
-        theQuery.setParameter("customerId",theId);
-        theQuery.executeUpdate();
-    }
-
-    @Override
-    public List<Customer> searchCustomers(String theSearchName) {
         // get the current hibernate session
         Session currentSession = sessionFactory.getCurrentSession();
 
-        Query theQuery = null;
+        // delete object with primary key
+        Query theQuery =
+                currentSession.createQuery("delete from Customer where id=:customerId");
+        theQuery.setParameter("customerId", theId);
 
-        //
-        // only search by name if theSearchName is not empty
-        //
-        if (theSearchName != null && theSearchName.trim().length() > 0) {
-            // search for firstName or lastName ... case insensitive
-            theQuery =currentSession.createQuery("from Customer where lower(firstName) like :theName or lower(lastName) like :theName", Customer.class);
-            theQuery.setParameter("theName", "%" + theSearchName.toLowerCase() + "%");
-        }
-        else {
-            // theSearchName is empty ... so just get all customers
-            theQuery =currentSession.createQuery("from Customer", Customer.class);
-        }
-
-        // execute query and get result list
-        List<Customer> customers = theQuery.getResultList();
-
-        // return the results
-        return customers;
-
+        theQuery.executeUpdate();
     }
 
 }
+
+
+
+
+
 
 
 
